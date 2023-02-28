@@ -18,17 +18,21 @@ logger = logging.getLogger(__name__)
 class LoginResource(Resource):
 
     def post(self):
-        user_stmt = select(User).where(User.username == request.get_json()["username"])
-        user = db.session.execute(user_stmt).scalar_one()
 
-        if not user:
-            return {"msg": "Username doesn't exist"}, 400
+        username = request.get_json()["username"]
+        user = db.one_or_404(
+            db.select(User).filter_by(username = username),
+            description=f"No user named '{username}'")
 
-        logger.debug(f"{user.username} try to login")
+        logger.debug(f"{username} try to login")
 
-        if request.get_json()["password"] != user.password or request.get_json()["code"] != int(user.code):
+        password = request.get_json()["password"] 
+        code = request.get_json()["code"] 
+
+        if password != user.password or code != user.code:
             return {"msg": "Bad password or code"}, 400
 
         logger.debug(f"{user.username} login token generated ")
+
         access_token = create_access_token(identity=user.username)
         return jsonify(access_token=f"Bearer {access_token}")
