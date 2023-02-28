@@ -17,6 +17,22 @@ def test_user_create(client):
     assert response.status_code == 201
     assert response.json["username"] == "jdoe"
 
+def test_with_username_created(client,test_user_model):
+    user_json = {
+            "first_name": "carlos",
+            "last_name": "alvarez",
+            "type": "client-person",
+            "document_id": "12345678",
+            "birthday": "1997-01-01",
+            "country": "peru",
+            "city": "lima",
+            "address": "av siempreviva",
+            "email": "ca@texample.com",
+            "phone_number": "999555999"
+    }
+    response = client.post(f"{USERS_ENDPOINT}",json=user_json)
+    assert response.status_code == 201
+    assert response.json["username"] == "calvarez2"
 
 def test_user_create_with_empty_field(client):
     # no country 
