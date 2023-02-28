@@ -1,0 +1,12 @@
+/venv
+bank_api.log
+.pytest_cache
+.coverage
+bank_102.db
+bank_api.log
+/bank_api/__pycache__
+/bank_api/models/__pycache__
+/bank_api/resources/__pycache__
+/bank_api/schemas/__pycache__
+/tests/__pycache__
+/htmlcov
