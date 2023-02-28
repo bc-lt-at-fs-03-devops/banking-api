@@ -9,3 +9,4 @@ bank_api.log
 /bank_api/resources/__pycache__
 /bank_api/schemas/__pycache__
 /tests/__pycache__
+/htmlcov
