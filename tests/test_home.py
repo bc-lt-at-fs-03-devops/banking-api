@@ -22,7 +22,7 @@ def test_home(client):
     login_json = {
         "username": user_creation_response.json["username"],
         "password": user_creation_response.json["password"],
-        "code": user_creation_response.json["code"] # Esta pasando algo con el tipo de dato de code, me lo lee cuando es un string y no un int
+        "code": user_creation_response.json["code"] # The type of the "code" is a string and its is supposed to be integer
     }
     print(login_json)
     login_response = client.post(f"{LOGIN_ENDPOINT}",
