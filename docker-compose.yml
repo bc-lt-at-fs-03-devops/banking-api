@@ -1,0 +1,7 @@
+services:
+  banking-api:
+    build:
+      context: .
+      dockerfile: Dockerfile 
+    volumes:
+      - .:/python-docker
