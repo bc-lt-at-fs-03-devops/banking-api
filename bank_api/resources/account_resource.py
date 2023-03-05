@@ -23,7 +23,6 @@ class AccountResource(Resource):
                 db.select(User).filter_by(username=username),
                 description=f"No user named '{username}'")
             user_dict = user.__dict__
-            user_dict.pop
             user_id = user_dict['id']
             account = AccountSchema().load({"user_id": user_id})
             db.session.add(account)
@@ -49,10 +48,11 @@ class AccountResource(Resource):
             db.select(User).filter_by(username=username),
             description=f"No user named '{username}'")
         user_dict = user.__dict__
-        user_dict.pop
         user_id = user_dict['id']
         account = db.one_or_404(
             db.select(Account).filter_by(user_id=user_id),
             description=f"No account for user '{user_id}'")
-        account_dict = user.__dict__
+        account_dict = account.__dict__
+        account_dict.pop("_sa_instance_state")
+        print(account_dict)
         return jsonify(account_dict)

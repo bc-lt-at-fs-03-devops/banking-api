@@ -7,9 +7,8 @@ from sqlalchemy import text
 def generate_cbu(context):
     user_id = context.get_current_parameters()['user_id']
     accounts = select(Account).where(Account.user_id == user_id)
-    query = text(f"SELECT count(*) AS count FROM Account WHERE user_id like '{user_id}%'")
+    query = text(f"SELECT count(*) AS count FROM accounts WHERE user_id like '{user_id}%'")
     count = db.session.scalars(query).first()
-    print(count)
     cbu = 10200000000 + user_id * 10000 + count + 1
     return cbu
 
