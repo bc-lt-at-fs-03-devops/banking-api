@@ -43,7 +43,6 @@ def deposit(transaction):
     new_balance = destiny_balance + transaction['amount']
     account = update_balance(cbu_destiny, new_balance)
     transaction = save_transaction_to_db(transaction)
-    print(transaction)
     return jsonify(
         origin_account=transaction.origin_account,
         final_account=transaction.final_account,

@@ -15,10 +15,11 @@ def test_deposit(client, test_user_model):
     account_response = client.post(f"{ACCOUNT_ENDPOINT}",
                                    headers={'Authorization': login_response.json['access_token']})
     assert account_response.status_code == 200
+    cbu = account_response.json['cbu']
     transaction_json = {
         "transaction_type": "deposit",
         "origin_account": 423424,
-        "final_account": 10200020001,
+        "final_account": cbu,
         "description": "test deposit",
         "amount": 100.0
     }
@@ -39,16 +40,16 @@ def test_withdraw(client, test_user_model):
         account_response = client.post(f"{ACCOUNT_ENDPOINT}",
                                        headers={'Authorization': login_response.json['access_token']})
         assert account_response.status_code == 200
+        cbu = account_response.json['cbu']
         transaction_json = {
                 "transaction_type": "withdraw",
-                "origin_account": 10200020001,
+                "origin_account": cbu,
                 "final_account": 13443523,
                 "description": "test deposit",
                 "amount": 10.0
             }
         transaction_response = client.post(f"{TRANSACTION_ENDPOINT}", json=transaction_json)
         assert transaction_response.status_code == 200
-        print(account_response.json)
         assert transaction_response.json['balance'] == 90.0
 
 
@@ -63,18 +64,19 @@ def test_transaction(client, test_user_model):
         account_response = client.post(f"{ACCOUNT_ENDPOINT}",
                                        headers={'Authorization': login_response.json['access_token']})
         assert account_response.status_code == 200
+        cbu_origin = account_response.json['cbu']
         account_response = client.post(f"{ACCOUNT_ENDPOINT}",
                                        headers={'Authorization': login_response.json['access_token']})
         assert account_response.status_code == 200
+        cbu_destiny = account_response.json['cbu']
         transaction_json = {
                 "transaction_type": "transaction",
-                "origin_account": 10200020001,
-                "final_account": 10200020002,
+                "origin_account": cbu_origin,
+                "final_account": cbu_destiny,
                 "description": "test transaction",
                 "amount": 10.0
             }
         transaction_response = client.post(f"{TRANSACTION_ENDPOINT}", json=transaction_json)
         assert transaction_response.status_code == 200
-        print(account_response.json)
-        assert transaction_response.json['balance'] == 90.0
-        assert transaction_response.json['final_account'] == 10200020002
+        assert transaction_response.json['balance'] == account_response.json['balance'] + transaction_response.json['amount']
+        assert transaction_response.json['final_account'] == cbu_destiny

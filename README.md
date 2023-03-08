@@ -63,62 +63,100 @@ input
 Authorization   "Bearer eyJhbGciOi...."
 output
 {
-	"account": {
-		"balance": 0,
-		"cbu": 10200040002,
-		"user_id": 4
-	}
+        "balance": 90.0,
+        "cbu": 10200020001,
+        "creation_date": "Wed, 08 Mar 2023 00:00:00 GMT",
+        "currency": "local",
+        "user_id": 2
 }
 ```
-## See all acounts
-GET /accounts
-```json
-input
-# Header        Value
-Authorization   "Bearer eyJhbGciOi...."
-output
-{
-	"accounts": [
-		{
-			"balance": 195,
-			"cbu": 10200020001,
-			"id": 2,
-			"user_id": 2
-		},
-		{
-			"balance": 0,
-			"cbu": 10200020002,
-			"id": 3,
-			"user_id": 2
-		}
-	]
-}
-```
-## See info one account (to verify before transaction)
-GET /account/<int:cbu>
-```json
-input 
-/account/<int:cbu>
-output
-{
-	"cbu": 10200020012,
-	"creation_date": "2023-10-02",
-	"first_name": "pedrito",
-	"last_name": "ramirez",
-	"username": "pramirez2"
-}
-```
-# Transactions
-POST /transaction
+
+[comment]: <> (## See all acounts)
+
+[comment]: <> (GET /accounts)
+
+[comment]: <> (```json)
+
+[comment]: <> (input)
+
+[comment]: <> (# Header        Value)
+
+[comment]: <> (Authorization   "Bearer eyJhbGciOi....")
+
+[comment]: <> (output)
+
+[comment]: <> ({)
+
+[comment]: <> (	"accounts": [)
+
+[comment]: <> (		{)
+
+[comment]: <> (			"balance": 195,)
+
+[comment]: <> (			"cbu": 10200020001,)
+
+[comment]: <> (			"id": 2,)
+
+[comment]: <> (			"user_id": 2)
+
+[comment]: <> (		},)
+
+[comment]: <> (		{)
+
+[comment]: <> (			"balance": 0,)
+
+[comment]: <> (			"cbu": 10200020002,)
+
+[comment]: <> (			"id": 3,)
+
+[comment]: <> (			"user_id": 2)
+
+[comment]: <> (		})
+
+[comment]: <> (	])
+
+[comment]: <> (})
+
+[comment]: <> (```)
+
+[comment]: <> (## See info one account &#40;to verify before transaction&#41;)
+
+[comment]: <> (GET /account/<int:cbu>)
+
+[comment]: <> (```json)
+
+[comment]: <> (input )
+
+[comment]: <> (/account/<int:cbu>)
+
+[comment]: <> (output)
+
+[comment]: <> ({)
+
+[comment]: <> (	"cbu": 10200020012,)
+
+[comment]: <> (	"creation_date": "2023-10-02",)
+
+[comment]: <> (	"first_name": "pedrito",)
+
+[comment]: <> (	"last_name": "ramirez",)
+
+[comment]: <> (	"username": "pramirez2")
+
+[comment]: <> (})
+
+[comment]: <> (```)
+## Transactions
+POST /transactions
 ## Deposit
 ```json
 # input
 {
 	"transaction_type": "deposit",
-	"cbu_origin": 1234567, # can be a DNI
-	"cbu_destiny": 10200010001, # account to be updated
+	"origin_account": 423424, #can be a DNI
+	"final_account": 10200020001, #account to be update
 	"description": "test deposit",
-	"amount": 10.0
+	"amount": 100.0
 }
 ```
 ## Withdraw
@@ -126,8 +164,8 @@ POST /transaction
 # input
 {
 	"transaction_type": "withdraw",
-	"cbu_origin": 1234567, # can be a DNI
-	"cbu_destiny": 10200010001,  # account to be updated
+	"origin_account": 10200020001, #account to be update
+	"final_account": 78687543, #can be a DNI
 	"description": "test withdraw",
 	"amount": 10.0
 }
@@ -137,55 +175,91 @@ POST /transaction
 # input
 {
 	"transaction_type": "transaction",
-	"cbu_origin": 10200010001,
-	"cbu_destiny": 10200020001,
+	"origin_account": 10200020001,
+	"final_account": 10200020002,
 	"description": "test transaction",
-	"amount": 10.0
+	"amount": 50.0
 }
 ```
 ```json
 output
 {
-	"amount": 10.0,
-	"cbu_destiny": 10200020001,
-	"cbu_origin": 10200010001,
+	"amount": 50.0,
+	"balance": 40.0,
 	"description": "test transaction",
-	"origin_new_balance": 130.0
+	"final_account": 10200020002,
+	"origin_account": 10200020001
 }
 ```
-## Report transactions
-GET /report_transactions
-```json
-# input
-# month incorrect '01', correct '1' 
-{
-	"year": 2023,
-	"month": 2,
-	"cbu": 10200010001
-}
-# output
-{
-	"cbu": 10200010001,
-	"period": "2023-02",
-	"transactions": [
-		{
-			"amount": 190.0,
-			"date": "2023-02-15",
-			"description": "test deposit",
-			"final_account": 10200010001,
-			"origin_account": 1234567,
-			"status": "True",
-			"type": "deposit"
-		},
-		{
-			"amount": 50.0,
-			"date": "2023-02-15",
-			"description": "test withdraw",
-			"final_account": 10200010001,
-			"origin_account": 1234567,
-			"status": "True",
-			"type": "withdraw"
-		}
-	]
-}
-```
+
+[comment]: <> (## Report transactions)
+
+[comment]: <> (GET /report_transactions)
+
+[comment]: <> (```json)
+
+[comment]: <> (# input)
+
+[comment]: <> (# month incorrect '01', correct '1' )
+
+[comment]: <> ({)
+
+[comment]: <> (	"year": 2023,)
+
+[comment]: <> (	"month": 2,)
+
+[comment]: <> (	"cbu": 10200010001)
+
+[comment]: <> (})
+
+[comment]: <> (# output)
+
+[comment]: <> ({)
+
+[comment]: <> (	"cbu": 10200010001,)
+
+[comment]: <> (	"period": "2023-02",)
+
+[comment]: <> (	"transactions": [)
+
+[comment]: <> (		{)
+
+[comment]: <> (			"amount": 190.0,)
+
+[comment]: <> (			"date": "2023-02-15",)
+
+[comment]: <> (			"description": "test deposit",)
+
+[comment]: <> (			"final_account": 10200010001,)
+
+[comment]: <> (			"origin_account": 1234567,)
+
+[comment]: <> (			"status": "True",)
+
+[comment]: <> (			"type": "deposit")
+
+[comment]: <> (		},)
+
+[comment]: <> (		{)
+
+[comment]: <> (			"amount": 50.0,)
+
+[comment]: <> (			"date": "2023-02-15",)
+
+[comment]: <> (			"description": "test withdraw",)
+
+[comment]: <> (			"final_account": 10200010001,)
+
+[comment]: <> (			"origin_account": 1234567,)
+
+[comment]: <> (			"status": "True",)
+
+[comment]: <> (			"type": "withdraw")
+
+[comment]: <> (		})
+
+[comment]: <> (	])
+
+[comment]: <> (})
+
+[comment]: <> (```)
