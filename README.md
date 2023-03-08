@@ -1,4 +1,4 @@
-# Endpoints
+# Endpoints test pull request
 ## Create user
 POST '/users'
 
