@@ -29,6 +29,14 @@ def update_balance(cbu, new_balance):
     account = Account.query.filter_by(cbu=cbu).first()
     account.balance = new_balance
     db.session.commit()
+    return account
+
+
+def save_transaction_to_db(transaction_dict):
+    transaction = TransactionSchema().load(transaction_dict)
+    db.session.add(transaction)
+    db.session.commit()
+    return transaction
 
 
 def deposit(transaction):
@@ -36,7 +44,15 @@ def deposit(transaction):
     final_account = get_account(cbu_destiny)
     destiny_balance = final_account['balance']
     new_balance = destiny_balance + transaction['amount']
-    update_balance(cbu_destiny, new_balance)
+    account = update_balance(cbu_destiny, new_balance)
+    transaction = save_transaction_to_db(transaction)
+    print(transaction)
+    return jsonify(
+        origin_account=transaction.origin_account,
+        final_account=transaction.final_account,
+        description=transaction.description,
+        amount=transaction.amount,
+        balance=account.balance)
 
 
 def withdraw(transaction):
@@ -46,7 +62,14 @@ def withdraw(transaction):
     if origin_balance < transaction['amount']:
         raise Exception("The amount to withdraw is bigger than current balance")
     new_balance = origin_balance - transaction['amount']
-    update_balance(cbu_origin, new_balance)
+    account = update_balance(cbu_origin, new_balance)
+    transaction = save_transaction_to_db(transaction)
+    return jsonify(
+        origin_account=transaction.origin_account,
+        final_account=transaction.final_account,
+        description=transaction.description,
+        amount=transaction.amount,
+        balance=account.balance)
 
 
 def transaction(transaction):
@@ -58,9 +81,16 @@ def transaction(transaction):
     origin_balance = origin_account['balance']
     if origin_balance >= transaction['amount']:
         new_origin_balance = origin_balance - transaction['amount']
-        update_balance(cbu_origin, new_origin_balance)
+        account_origin = update_balance(cbu_origin, new_origin_balance)
         new_destiny_balance = destiny_balance + transaction['amount']
-        update_balance(cbu_destiny, new_destiny_balance)
+        account_final = update_balance(cbu_destiny, new_destiny_balance)
+        transaction = save_transaction_to_db(transaction)
+        return jsonify(
+            origin_account=transaction.origin_account,
+            final_account=transaction.final_account,
+            description=transaction.description,
+            amount=transaction.amount,
+            balance=account_origin.balance)
 
 
 class TransactionResource(Resource):
@@ -70,11 +100,11 @@ class TransactionResource(Resource):
             transaction_dict = transaction_loaded.__dict__
             transaction_dict.pop('_sa_instance_state')
             if transaction_dict['transaction_type'] == 'deposit':
-                deposit(transaction_dict)
+                return deposit(transaction_dict)
             if transaction_dict['transaction_type'] == 'withdraw':
-                withdraw(transaction_dict)
+                return withdraw(transaction_dict)
             if transaction_dict['transaction_type'] == 'transaction':
-                transaction(transaction_dict)
+                return transaction(transaction_dict)
         except ValidationError as e:
             logger.warning(f"Validation error:  {e.messages} ")
             abort(405, errors=e.messages)
