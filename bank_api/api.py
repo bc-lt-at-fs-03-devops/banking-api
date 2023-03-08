@@ -18,6 +18,10 @@ from bank_api.database import db
 from bank_api.resources.users_resource import UserResource, USERS_ENDPOINT
 from bank_api.resources.login_resource import LoginResource, LOGIN_ENDPOINT
 from bank_api.resources.home_resource import HomeResource, HOME_ENDPOINT
+from bank_api.resources.account_resource import AccountResource, ACCOUNT_ENDPOINT
+from bank_api.resources.account_info_resource import AccountInfoResource, ACCOUNT_INFO_ENDPOINT
+from bank_api.resources.transaction_resource import TransactionResource, TRANSACTION_ENDPOINT
+
 
 def create_app(db_location):
     """
@@ -46,6 +50,9 @@ def create_app(db_location):
     api.add_resource(UserResource, USERS_ENDPOINT)
     api.add_resource(LoginResource, LOGIN_ENDPOINT)
     api.add_resource(HomeResource, HOME_ENDPOINT)
+    api.add_resource(AccountResource, ACCOUNT_ENDPOINT)
+    api.add_resource(AccountInfoResource, ACCOUNT_INFO_ENDPOINT)
+    api.add_resource(TransactionResource, TRANSACTION_ENDPOINT)
 
     with app.app_context():
         db.create_all()

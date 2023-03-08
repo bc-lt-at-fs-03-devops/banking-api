@@ -10,6 +10,8 @@ from marshmallow import ValidationError
 from bank_api.database import db
 from bank_api.models.user import User
 from bank_api.schemas.user_schema import UserSchema
+from bank_api.schemas.account_schema import AccountSchema
+
 
 USERS_ENDPOINT = "/users"
 logger = logging.getLogger(__name__)
@@ -24,10 +26,15 @@ class UserResource(Resource):
             user = UserSchema().load(request.get_json())
             db.session.add(user)
             db.session.commit()
+            # add account by default
+            account = AccountSchema().load({"user_id": user.id})
+            db.session.add(account)
+            db.session.commit()
             return make_response(jsonify(
                 username = user.username,
                 password = user.password,
-                code = user.code),
+                code = user.code,
+                cbu = account.cbu),
                 201)
 
         except ValidationError as e:
