@@ -14,7 +14,6 @@ logger = logging.getLogger(__name__)
 
 
 class AccountResource(Resource):
-
     @jwt_required()
     def post(self):
         try:
@@ -27,13 +26,11 @@ class AccountResource(Resource):
             account = AccountSchema().load({"user_id": user_id})
             db.session.add(account)
             db.session.commit()
-
             account = db.one_or_404(
                 db.select(Account).filter_by(user_id=user_id),
                 description=f"No account for user '{user_id}'")
             account_dict = account.__dict__
             account_dict.pop("_sa_instance_state")
-            print(account_dict)
             logger.debug(f"Create new account by {user.username}")
             return jsonify(account_dict)
 
@@ -49,10 +46,9 @@ class AccountResource(Resource):
             description=f"No user named '{username}'")
         user_dict = user.__dict__
         user_id = user_dict['id']
-        account = db.one_or_404(
-            db.select(Account).filter_by(user_id=user_id),
+        accounts = db.one_or_404(
+            db.select(Account).filter_by(user_id=user_id).all(),
             description=f"No account for user '{user_id}'")
-        account_dict = account.__dict__
+        account_dict = accounts.__dict__
         account_dict.pop("_sa_instance_state")
-        print(account_dict)
         return jsonify(account_dict)
