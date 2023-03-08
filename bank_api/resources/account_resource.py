@@ -3,7 +3,6 @@ from flask import request, jsonify, make_response
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource, abort
 from marshmallow import ValidationError
-from sqlalchemy import select
 from bank_api.database import db
 from bank_api.models.user import User
 from bank_api.schemas.account_schema import AccountSchema
