@@ -54,18 +54,3 @@ class AccountResource(Resource):
         except ValidationError as e:
             logger.warning(f"Validation error:  {e.messages} ")
             abort(405, errors=e.messages)
-
-    @jwt_required()
-    def get(self):
-        username = get_jwt_identity()
-        user = db.one_or_404(
-            db.select(User).filter_by(username=username),
-            description=f"No user named '{username}'")
-        user_dict = user.__dict__
-        user_id = user_dict['id']
-        accounts = db.one_or_404(
-            db.select(Account).filter_by(user_id=user_id).all(),
-            description=f"No account for user '{user_id}'")
-        account_dict = accounts.__dict__
-        account_dict.pop("_sa_instance_state")
-        return jsonify(account_dict)

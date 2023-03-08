@@ -1,32 +1,68 @@
+import datetime
+
 from bank_api.resources.account_resource import ACCOUNT_ENDPOINT
 from bank_api.resources.login_resource import LOGIN_ENDPOINT
-from bank_api.resources.users_resource import USERS_ENDPOINT
 
 
-def test_create_account(client):
-    user_json = {
-        "first_name": "jhon",
-        "last_name": "doe",
-        "type": "client-person",
-        "document_id": "12345678",
-        "birthday": "1997-01-01",
-        "country": "peru",
-        "city": "lima",
-        "address": "av siempreviva",
-        "email": "ca@texample.com",
-        "phone_number": "999555999"
-    }
-    user_response = client.post(f"{USERS_ENDPOINT}", json=user_json)
-    assert user_response.status_code == 201
+def test_create_account(client, test_user_model):
 
     login_json = {
-        "username": user_response.json["username"],
-        "password": user_response.json["password"],
-        "code": int(user_response.json["code"])
+        "username": "calvarez",
+        "password": "123456",
+        "code": "12345678"
     }
-    login_response = client.post(f"{LOGIN_ENDPOINT}",
-                                 json=login_json)
-    response = client.post(f"{ACCOUNT_ENDPOINT}",
-                           headers={'Authorization': login_response.json['access_token']})
-    assert user_response.json["id"] == response.json["user_id"]
+    login_response = client.post(f"{LOGIN_ENDPOINT}", json=login_json)
+    assert login_response.status_code == 200
+    account_response = client.post(f"{ACCOUNT_ENDPOINT}",
+                                   headers={'Authorization': login_response.json['access_token']})
 
+    assert account_response.status_code == 200
+
+
+def test_create_account_without_auth(client):
+    account_response = client.post(f"{ACCOUNT_ENDPOINT}")
+    assert account_response.status_code == 401
+
+
+def test_create_account_with_wrong_auth(client, test_user_model):
+    login_json = {
+        "username": "calvarez",
+        "password": "123456",
+        "code": "12345678"
+    }
+    login_response = client.post(f"{LOGIN_ENDPOINT}", json=login_json)
+    account_response = client.post(f"{ACCOUNT_ENDPOINT}",
+                                   headers={'Authorization': login_response.json['access_token']+'sd'})
+
+    assert account_response.status_code == 422
+
+
+def test_default_values(client, test_user_model):
+    login_json = {
+        "username": "calvarez",
+        "password": "123456",
+        "code": "12345678"
+    }
+    login_response = client.post(f"{LOGIN_ENDPOINT}", json=login_json)
+    account_response = client.post(f"{ACCOUNT_ENDPOINT}",
+                                   headers={'Authorization': login_response.json['access_token']})
+    assert account_response.status_code == 200
+    assert account_response.json['balance'] == 0.0
+    assert account_response.json['currency'] == "local"
+    cbu= 10200000000 + 2 * 10000 + 0 + 1    # 10200020001
+    assert account_response.json['cbu'] == cbu
+
+
+def test_associate_user_account(client, test_user_model):
+    login_json = {
+        "username": "calvarez",
+        "password": "123456",
+        "code": "12345678"
+    }
+    login_response = client.post(f"{LOGIN_ENDPOINT}", json=login_json)
+    assert login_response.status_code == 200
+    account_response = client.post(f"{ACCOUNT_ENDPOINT}",
+                                   headers={'Authorization': login_response.json['access_token']})
+
+    assert account_response.status_code == 200
+    assert account_response.json['user_id'] == 2
