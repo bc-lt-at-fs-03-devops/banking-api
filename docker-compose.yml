@@ -5,3 +5,5 @@ services:
       dockerfile: Dockerfile 
     volumes:
       - .:/python-docker
+    ports:
+      - 9000:9000
