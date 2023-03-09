@@ -1,0 +1,17 @@
+name: Install requirements run coverage test
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Install Python Dependencies
+        run: pip install -r requirements_api.txt
+      - name: Run pytest
+        run: pytest
+      - name: Run coverage
+        run: coverage run -m pytest
