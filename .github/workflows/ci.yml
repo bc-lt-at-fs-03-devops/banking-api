@@ -20,7 +20,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: my-container-registry.com/my-image:${{ github.sha }}
+          tags: kevingerardo23/bank-api:${{ github.sha }}
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
