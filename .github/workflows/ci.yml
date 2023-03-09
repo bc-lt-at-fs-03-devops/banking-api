@@ -23,4 +23,4 @@ jobs:
           context: .
           push: true
           repository: ${{ github.repository }} 
-          tags: ${{ github.sha }}
+          tags: kevingerardo23/bank-api:${{ github.sha }}
