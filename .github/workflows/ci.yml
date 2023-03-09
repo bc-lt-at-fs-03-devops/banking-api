@@ -22,5 +22,5 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           context: .
           push: true
-          repository: ${{ github.repository }} 
-          tags: kevingerardo23/bank-api:${{ github.sha }}
+          repository: kevingerardo23/bank-api
+          tags: ${{ github.sha }}
