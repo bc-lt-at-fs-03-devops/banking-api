@@ -24,7 +24,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: list folders
-        run: ls -a
+        run: |
+          ls -a
+          ls -a .scannerwork/
       #- name: SonarQube Quality Gate check
       #  id: sonarqube-quality-gate-check
       #  uses: sonarsource/sonarqube-quality-gate-action@master
