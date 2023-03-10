@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-      - feature/static-code-analysis
+      - feature/quality-gate
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
