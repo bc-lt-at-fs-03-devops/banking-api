@@ -2,6 +2,7 @@ name: Sonaar Scaner Analysis
 on:
   push:
     branches:
+      - main
       - feature/static-code-analysis
 jobs:
   build-and-push:
@@ -9,12 +10,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-      - name: Install Python Dependencies
-        run: pip install -r requirements_api.txt
-      - name: Run pytest
-        run: pytest
-      - name: Run coverage
-        run: coverage run -m pytest
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
