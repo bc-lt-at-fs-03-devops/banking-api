@@ -10,3 +10,8 @@ bank_api.log
 /bank_api/schemas/__pycache__
 /tests/__pycache__
 /htmlcov
+.pytest_cache
+.idea
+lmeneses-github
+lmeneses-github.pub
+.gitignore

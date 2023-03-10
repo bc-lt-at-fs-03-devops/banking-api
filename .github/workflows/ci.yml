@@ -3,7 +3,11 @@ on:
   push:
     branches:
       - main
+<<<<<<< HEAD
       - feature/quality-gate
+=======
+      - feature/static-code-analysis
+>>>>>>> main
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -23,14 +27,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: list folders
-        run: |
-          echo "List root"
-          ls -a
-          echo "List folder scannerwork"
-          ls -a .scannerwork/
-          echo "Print report-task.txt"
-          cat .scannerwork/report-task.txt
       - name: SonarQube Quality Gate check
         id: sonarqube-quality-gate-check
         uses: sonarsource/sonarqube-quality-gate-action@master
