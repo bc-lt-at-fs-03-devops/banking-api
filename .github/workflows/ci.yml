@@ -31,12 +31,12 @@ jobs:
           ls -a .scannerwork/
           echo "Print report-task.txt"
           cat .scannerwork/report-task.txt
-      #- name: SonarQube Quality Gate check
-      #  id: sonarqube-quality-gate-check
-      #  uses: sonarsource/sonarqube-quality-gate-action@master
-      #  timeout-minutes: 5
-      #  env:
-      #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #    SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - name: SonarQube Quality Gate check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       #- name: "Example show SonarQube Quality Gate Status value"
       #  run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
