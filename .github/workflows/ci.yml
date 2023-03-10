@@ -24,12 +24,12 @@ jobs:
           push: true
           repository: kevingerardo23/bank-api
           tags: ${{ github.sha }}
-        # Triggering SonarQube analysis as results of it are required by Quality Gate check.
-      - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@master
+        # Triggering SonarCloud analysis as results of it are required by Quality Gate check.
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
       # Check the Quality Gate status.
       - name: SonarQube Quality Gate check
         id: sonarqube-quality-gate-check
