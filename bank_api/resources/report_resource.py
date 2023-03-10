@@ -18,9 +18,9 @@ class ReportResource(Resource):
 
         transactions = Transaction.query.filter(
                 or_(Transaction.origin_account == cbu,
-                    Transaction.final_account == cbu)
-                # and_(extract('month',Transaction.date) == month,
-                #      extract('year', Transaction.date) == year)
+                    Transaction.final_account == cbu),
+                and_(extract('month',Transaction.date) == month,
+                     extract('year', Transaction.date) == year)
         )
         transactions_arr = []
         for transaction in transactions:
