@@ -12,7 +12,6 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
-
 from bank_api.constants import PROJECT_ROOT, BANK_DATABASE
 from bank_api.database import db
 from bank_api.resources.users_resource import UserResource, USERS_ENDPOINT
@@ -21,6 +20,7 @@ from bank_api.resources.home_resource import HomeResource, HOME_ENDPOINT
 from bank_api.resources.account_resource import AccountResource, ACCOUNT_ENDPOINT
 from bank_api.resources.account_info_resource import AccountInfoResource, ACCOUNT_INFO_ENDPOINT
 from bank_api.resources.transaction_resource import TransactionResource, TRANSACTION_ENDPOINT
+from bank_api.resources.report_resource import ReportResource, REPORT_ENDPOINT
 
 
 def create_app(db_location):
@@ -53,6 +53,7 @@ def create_app(db_location):
     api.add_resource(AccountResource, ACCOUNT_ENDPOINT)
     api.add_resource(AccountInfoResource, ACCOUNT_INFO_ENDPOINT)
     api.add_resource(TransactionResource, TRANSACTION_ENDPOINT)
+    api.add_resource(ReportResource, REPORT_ENDPOINT)
 
     with app.app_context():
         db.create_all()
