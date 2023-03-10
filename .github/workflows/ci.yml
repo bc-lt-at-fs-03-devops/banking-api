@@ -23,20 +23,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.qualitygate.wait=true
-            -Dsonar.projectKey=bc-lt-at-fs-03_bank-api
-            -Dsonar.sources=.
-            -Dsonar.host.url=https://sonarcloud.io
-      - name: Check Quality Gate status
-        run: |
-          curl -sSf "https://sonarcloud.io/api/qualitygates/project_status?projectKey=bc-lt-at-fs-03_bank-api&branch=${GITHUB_REF#refs/heads/}" \
-            -H "Authorization: Bearer ${{ secrets.SONAR_TOKEN }}" \
-            -H 'Content-Type: application/json' \
-            | jq '.projectStatus.status' | grep -q ERROR
+      - name: SonarQube Quality Gate check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       - name: "Example show SonarQube Quality Gate Status value"
         run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
