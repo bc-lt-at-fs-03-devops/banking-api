@@ -3,11 +3,7 @@ on:
   push:
     branches:
       - main
-<<<<<<< HEAD
       - feature/quality-gate
-=======
-      - feature/static-code-analysis
->>>>>>> main
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
