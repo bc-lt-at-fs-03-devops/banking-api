@@ -1,20 +1,19 @@
-from shutil import copy
 from bank_api.api import create_app
-from bank_api.constants import BANK_DATABASE, PROJECT_ROOT
+from bank_api.constants import BANK_DATABASE
 import pytest
 from bank_api.database import db
 from bank_api.models.user import User
 import datetime
+import tempfile
 
 @pytest.fixture()
-def app(tmpdir):
-
-    copy(f"{PROJECT_ROOT}/{BANK_DATABASE}", tmpdir.dirpath())
-    temp_db_file = f"sqlite:///{tmpdir.dirpath()}/{BANK_DATABASE}"
+def app():
+    temp_dir = tempfile.TemporaryDirectory()
+    temp_db_file = f"sqlite:///{temp_dir.name}/{BANK_DATABASE}"
     app = create_app(temp_db_file)
     app.config["TESTING"] = True
-
     yield app
+    temp_dir.cleanup()
 
 @pytest.fixture()
 def client(app):

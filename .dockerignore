@@ -1,0 +1,42 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+# If coverage run -m pytest was runned
+.coverage       
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+# Excludes bank_api.log
+*.log           
+.git*
+.mypy_cache
+# If coverage run -m pytest was runned
+.pytest_cache   
+.hypothesis
+#
+# Added in last version
+#
+# For subdirectories
+*/__pycache__    
+# If some coverage html was runned
+/htmlcov   
+# Not required in prod img     
+/tests          
+# Excludes .dockerignore-dev and .dockerignore-prod
+.dockerignore*  
+# Excludes bank_102.db (if the api was runned)
+*.db          
+# Excludes bank_insomnia-v1.json  
+*.json      
+# Excludes building config    
+Dockerfile      
+# Excludes README.md
+*.md            
