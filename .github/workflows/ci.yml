@@ -26,6 +26,8 @@ jobs:
       - name: SonarQube Quality Gate check
         id: sonarqube-quality-gate-check
         uses: sonarsource/sonarqube-quality-gate-action@master
+        with:
+          scanMetadataReportFile: https://sonarcloud.io/dashboard?id=bc-lt-at-fs-03_bank-api&branch=feature%2Fquality-gate&resolved=false
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
