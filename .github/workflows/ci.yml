@@ -33,11 +33,11 @@ jobs:
       #- name: "Example show SonarQube Quality Gate Status value"
       #  run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
   build-image-and-push:
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-      # To enable logout remove credentials
       - name: Login docker hub
         uses: docker/login-action@v2
         with:
