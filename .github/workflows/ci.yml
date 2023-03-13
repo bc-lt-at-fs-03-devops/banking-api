@@ -48,6 +48,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: kevingerardo23/bank-api:${{ vars.MAJOR }}.${{ vars.MINOR }}
-      - name: Update MINOR version variable
-        run: echo "::set-output name=MINOR::${${{ vars.MINOR }}+1}"
+          tags: kevingerardo23/bank-api:${{ vars.MAJOR }}.${{ vars.MINOR }}-$(date +%s)
