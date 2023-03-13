@@ -35,6 +35,8 @@ jobs:
   build-image-and-push:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
       - name: Build Docker Image
         uses: docker/build-push-action@v1
         with:
