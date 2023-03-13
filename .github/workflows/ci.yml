@@ -48,4 +48,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: kevingerardo23/bank-api:${{ vars.MAJOR }}.${{ vars.MINOR }}-${{ date +%s }}
+          tags: kevingerardo23/bank-api:${{ vars.MAJOR }}.${{ vars.MINOR }}-${{ github.run_number }}
