@@ -49,5 +49,5 @@ jobs:
           context: .
           push: true
           tags: kevingerardo23/bank-api:${{ vars.MAJOR }}.${{ vars.MINOR }}
-      - name: Update MINOR versionvariable
-        run: echo "::set-env name=MINOR::${{ vars.MINOR }}+1"
+      - name: Update MINOR version variable
+        run: echo "::set-env name=MINOR::${${{ vars.MINOR}}+1}"
