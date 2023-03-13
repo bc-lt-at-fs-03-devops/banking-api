@@ -36,6 +36,9 @@ output
 {
 	"access_token": "Bearer eyJhbGciOi..."
 }
+
+
+
 ```
 ## Home
 GET /home
