@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-      - feature/deploy-aws
+      - feature/deploy-aws-proposal
 jobs:
   scanner-code-analysis:
     runs-on: ubuntu-latest
@@ -49,20 +49,26 @@ jobs:
           tags: kevingerardo23/bank-api:${{ vars.MAJOR }}.${{ vars.MINOR }}-${{ github.run_number }}
   deploy:
     #needs: [build-image,scanner-code-analysis]
-    if: ${{ github.ref == 'refs/heads/feature/deploy-aws' }}
+    if: ${{ github.ref == 'refs/heads/feature/deploy-aws-proposal' }}
     runs-on: ubuntu-latest
-    steps:       
-      - name: Connect to EC2 instance
-        uses: appleboy/ssh-action@master
+    steps:
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@master
         with:
-          host: ${{ vars.EC2_IP_PUBLIC_PRODUCT }}
+          host: ${{ vars.EC2_IP_PUBLIC_PRODUCT  }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            # run commands on the remote server
-            echo "Stop all containers"
-            sudo docker kill $(docker ps -q)
-            echo "Remove all images"
-            sudo docker rmi $(docker images -q)
-            echo "Pull last image"
-            sudo docker pull kevingerardo23/bank-api:${{ vars.MAJOR }}.${{ vars.MINOR }}-${{ github.run_number }}
+          password: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          source: "docker-compose-deploy.yaml"
+          target: "/home/ubuntu"
+
+      #- name: Connect to EC2 instance
+      #  uses: appleboy/ssh-action@master
+      #  with:
+      #    host: ${{ vars.EC2_IP_PUBLIC_PRODUCT }}
+      #    username: ${{ secrets.EC2_USERNAME }}
+      #    key: ${{ secrets.EC2_SSH_KEY }}
+      #    script: |
+      #      # run commands on the remote server
+      #      
+      #      #sudo docker pull kevingerardo23/bank-api:${{ vars.MAJOR }}.${{ vars.MINOR }}-${{ github.run_number }}
