@@ -57,9 +57,9 @@ jobs:
         with:
           host: ${{ vars.EC2_IP_PUBLIC_PRODUCT  }}
           username: ${{ secrets.EC2_USERNAME }}
-          password: ${{ secrets.EC2_SSH_KEY }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
-          source: "docker-compose-deploy.yaml"
+          source: "./docker-compose-deploy.yaml"
           target: "/home/ubuntu"
 
       #- name: Connect to EC2 instance
