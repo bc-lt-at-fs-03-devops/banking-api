@@ -52,6 +52,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:       
       - name: Connect to aws
-        run: ssh -i ${{ secrets.EC2_SSH_KEY }} ubuntu@${{ vars.EC2_IP_PUBLIC }}
+        run: ssh ${{ secrets.EC2_SSH_KEY }} ubuntu@${{ vars.EC2_IP_PUBLIC }}
 
   
