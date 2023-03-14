@@ -59,7 +59,7 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > private-key
           chmod 400 private-key
           ls -lah
-          #scp -o StrictHostKeyChecking=no -i private-key docker-compose-deploy.yaml ${{ secrets.EC2_USERNAME }}@${{ vars.EC2_IP_PUBLIC_PRODUCT }}:/home/ubuntu
+          scp -o StrictHostKeyChecking=no -i private-key docker-compose-deploy.yaml ${{ secrets.EC2_USERNAME }}@${{ vars.EC2_IP_PUBLIC_PRODUCT }}:/home/ubuntu
 
       #- name: Connect to EC2 instance
       #  uses: appleboy/ssh-action@master
