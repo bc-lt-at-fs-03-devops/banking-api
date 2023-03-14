@@ -59,7 +59,7 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > private-key
           echo "MAJOR=${{ vars.MAJOR }}" > .env
           echo "MINOR=${{ vars.MINOR }}" >> .env
-          echo "RUN_NUMBER=61" >> .env
+          echo "RUN_NUMBER=63" >> .env
           chmod 400 private-key
           ls -lah
           scp \
