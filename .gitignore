@@ -15,3 +15,4 @@ bank_api.log
 lmeneses-github
 lmeneses-github.pub
 .gitignore
+*.pem
