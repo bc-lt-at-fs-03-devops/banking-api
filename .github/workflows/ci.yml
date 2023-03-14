@@ -31,7 +31,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
   build-image:
-    # if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -54,14 +54,14 @@ jobs:
       - name: Connect to EC2 instance
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ vars.EC2_IP_PUBLIC }}
+          host: ${{ vars.EC2_IP_PUBLIC_PRODUCT }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             # run commands on the remote server
             echo "Stop all containers"
-            docker kill $(docker ps -q)
+            sudo docker kill $(docker ps -q)
             echo "Remove all images"
-            docker rmi $(docker images -q)
+            sudo docker rmi $(docker images -q)
             echo "Pull last image"
             sudo docker pull kevingerardo23/bank-api:${{ vars.MAJOR }}.${{ vars.MINOR }}-${{ github.run_number }}
