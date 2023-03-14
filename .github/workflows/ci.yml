@@ -54,7 +54,8 @@ jobs:
     steps:
       - name: copy file via ssh password
         run: |
-          scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} docker-compose-deploy.yaml ${{ secrets.EC2_USERNAME }}@${{ vars.EC2_IP_PUBLIC_PRODUCT }}:/home/ubuntu
+          echo "${{ secrets.EC2_SSH_KEY }}" > private-key
+          scp -o StrictHostKeyChecking=no -i private-key docker-compose-deploy.yaml ${{ secrets.EC2_USERNAME }}@${{ vars.EC2_IP_PUBLIC_PRODUCT }}:/home/ubuntu
 
       #- name: Connect to EC2 instance
       #  uses: appleboy/ssh-action@master
