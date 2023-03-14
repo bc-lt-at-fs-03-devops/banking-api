@@ -76,4 +76,4 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             # run commands on the remote server
-            sudo docker-compose -f /home/ubuntu/docker-compose-deploy.yaml up -d --force-recreate
+            sudo docker compose -f /home/ubuntu/docker-compose-deploy.yaml up -d --force-recreate
