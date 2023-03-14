@@ -57,17 +57,23 @@ jobs:
       - name: copy file via ssh password
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > private-key
+          echo "MAJOR=${{ vars.MAJOR }}" > .env
+          echo "MINOR=${{ vars.MINOR }}" >> .env
+          echo "RUN_NUMBER=61" >> .env
           chmod 400 private-key
           ls -lah
-          scp -o StrictHostKeyChecking=no -i private-key docker-compose-deploy.yaml ${{ secrets.EC2_USERNAME }}@${{ vars.EC2_IP_PUBLIC_PRODUCT }}:/home/ubuntu
+          scp \
+            -o StrictHostKeyChecking=no \
+            -i private-key \
+            docker-compose-deploy.yaml .env \
+            ${{ secrets.EC2_USERNAME }}@${{ vars.EC2_IP_PUBLIC_PRODUCT }}:/home/ubuntu
 
-      #- name: Connect to EC2 instance
-      #  uses: appleboy/ssh-action@master
-      #  with:
-      #    host: ${{ vars.EC2_IP_PUBLIC_PRODUCT }}
-      #    username: ${{ secrets.EC2_USERNAME }}
-      #    key: ${{ secrets.EC2_SSH_KEY }}
-      #    script: |
-      #      # run commands on the remote server
-      #      
-      #      #sudo docker pull kevingerardo23/bank-api:${{ vars.MAJOR }}.${{ vars.MINOR }}-${{ github.run_number }}
+      - name: Connect to EC2 instance
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ vars.EC2_IP_PUBLIC_PRODUCT }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # run commands on the remote server
+            sudo docker-compose -f /home/ubuntu/docker-compose-deploy.yaml up -d --force-recreate
