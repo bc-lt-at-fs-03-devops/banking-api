@@ -3,9 +3,9 @@ on:
   push:
     branches:
       - main
-      - feature/build-image-ci-workflow
+      - feature/deploy-aws
 jobs:
-  sonnar-scanner-analysis:
+  scanner-code-analysis:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -30,8 +30,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      #- name: "Example show SonarQube Quality Gate Status value"
-      #  run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
   build-image:
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
@@ -49,3 +47,22 @@ jobs:
           context: .
           push: true
           tags: kevingerardo23/bank-api:${{ vars.MAJOR }}.${{ vars.MINOR }}-${{ github.run_number }}
+  deploy:
+    #needs: [build-image,scanner-code-analysis]
+    if: ${{ github.ref == 'refs/heads/feature/deploy-aws' }}
+    runs-on: ubuntu-latest
+    steps:       
+      - name: Connect to EC2 instance
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ vars.EC2_IP_PUBLIC_PRODUCT }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # run commands on the remote server
+            echo "Stop all containers"
+            sudo docker kill $(docker ps -q)
+            echo "Remove all images"
+            sudo docker rmi $(docker images -q)
+            echo "Pull last image"
+            sudo docker pull kevingerardo23/bank-api:${{ vars.MAJOR }}.${{ vars.MINOR }}-${{ github.run_number }}
