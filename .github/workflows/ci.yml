@@ -52,6 +52,8 @@ jobs:
     if: ${{ github.ref == 'refs/heads/feature/deploy-aws-proposal' }}
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
       - name: copy file via ssh password
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > private-key
