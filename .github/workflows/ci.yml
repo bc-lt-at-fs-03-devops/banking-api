@@ -60,3 +60,4 @@ jobs:
           script: |
             # run commands on the remote server
             echo "Hello world"
+            docker --version
