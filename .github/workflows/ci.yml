@@ -69,7 +69,7 @@ jobs:
           scp \
             -o StrictHostKeyChecking=no \
             -i private-key \
-            docker-compose.yaml .env \
+            docker-compose.yml .env \
             ${{ secrets.EC2_USERNAME }}@${{ vars.EC2_IP_PUBLIC_PRODUCT }}:/home/ubuntu
       - name: Docker compose up in EC2 instance
         run : |
@@ -77,4 +77,4 @@ jobs:
             -o StrictHostKeyChecking=no \
             -i private-key \
             ${{ secrets.EC2_USERNAME }}@${{ vars.EC2_IP_PUBLIC_PRODUCT }} \
-            'sudo docker compose -f /home/ubuntu/docker-compose.yaml up -d --force-recreate'
+            'sudo docker compose -f /home/ubuntu/docker-compose.yml up -d --force-recreate'
