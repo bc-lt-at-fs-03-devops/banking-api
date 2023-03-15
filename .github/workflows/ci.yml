@@ -58,7 +58,7 @@ jobs:
           path: docker-compose.yml
       - name: ls
         run: | 
-          cd docker-compose 
+          cd docker-compose.yml 
           ls
       - name: Create temporary key and .env
         run: |
