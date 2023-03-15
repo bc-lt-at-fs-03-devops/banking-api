@@ -52,14 +52,8 @@ jobs:
     if: ${{ github.ref == 'refs/heads/feature/deploy-aws' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout file docker-compose
+      - name: Checkout files
         uses: actions/checkout@v2
-        with:
-          path: docker-compose.yml
-      - name: ls
-        run: | 
-          cd docker-compose.yml 
-          ls
       - name: Create temporary key and .env
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > private-key
