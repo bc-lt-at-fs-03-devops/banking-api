@@ -5,9 +5,8 @@ on:
       - main
       - feature/deploy-aws
 
-runs-on: ubuntu-latest
-
 jobs:
+  runs-on: ubuntu-latest
 #   scanner-code-analysis:
 #     steps:
 #       - name: Checkout Code
