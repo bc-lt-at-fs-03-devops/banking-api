@@ -5,63 +5,76 @@ on:
       - main
       - feature/deploy-aws
 jobs:
-  scanner-code-analysis:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-      - name: Install tox and any other packages
-        run: pip install tox
-      - name: Run tox
-        run: tox -e py
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: SonarQube Quality Gate check
-        id: sonarqube-quality-gate-check
-        uses: sonarsource/sonarqube-quality-gate-action@master
-        timeout-minutes: 5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-  build-image:
-    if: ${{ github.ref == 'refs/heads/main' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-      - name: Login docker hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build and Push Docker Image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: true
-          tags: kevingerardo23/bank-api:${{ vars.MAJOR }}.${{ vars.MINOR }}-${{ github.run_number }}
+  # scanner-code-analysis:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v2
+  #     - name: Setup Python
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: ${{ matrix.python }}
+  #     - name: Install tox and any other packages
+  #       run: pip install tox
+  #     - name: Run tox
+  #       run: tox -e py
+  #     - name: SonarCloud Scan
+  #       uses: sonarsource/sonarcloud-github-action@master
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #     - name: SonarQube Quality Gate check
+  #       id: sonarqube-quality-gate-check
+  #       uses: sonarsource/sonarqube-quality-gate-action@master
+  #       timeout-minutes: 5
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  # build-image:
+  #   if: ${{ github.ref == 'refs/heads/main' }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v2
+  #     - name: Login docker hub
+  #       uses: docker/login-action@v2
+  #       with:
+  #         username: ${{ secrets.DOCKER_USERNAME }}
+  #         password: ${{ secrets.DOCKER_PASSWORD }}
+  #     - name: Build and Push Docker Image
+  #       uses: docker/build-push-action@v2
+  #       with:
+  #         context: .
+  #         push: true
+  #         tags: kevingerardo23/bank-api:${{ vars.MAJOR }}.${{ vars.MINOR }}-${{ github.run_number }}
   deploy:
-    needs: [build-image,scanner-code-analysis]
+    # needs: [build-image,scanner-code-analysis]
+    if: ${{ github.ref == 'refs/heads/feature/deploy-aws' }}
     runs-on: ubuntu-latest
-    steps:       
-      - name: Connect to EC2 instance
-        uses: appleboy/ssh-action@master
+    steps:
+      - name: Checkout file docker-compose
+        uses: actions/checkout@v2
         with:
-          host: ${{ vars.EC2_IP_PUBLIC_PRODUCT }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            # run commands on the remote server
-            echo "Stop all containers"
-            sudo docker kill $(docker ps -q)
-            echo "Remove all images"
-            sudo docker rmi $(docker images -q)
-            echo "Pull last image"
-            sudo docker pull kevingerardo23/bank-api:${{ vars.MAJOR }}.${{ vars.MINOR }}-${{ github.run_number }}
+          path: docker-compose.yml
+      - name: Create temporary key and .env
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > private-key
+          echo "MAJOR=${{ vars.MAJOR }}" > .env
+          echo "MINOR=${{ vars.MINOR }}" >> .env
+          echo "RUN_NUMBER=${{ github.run_number }}" >> .env
+      - name: Give user permissions key file
+        run: chmod 400 private-key 
+      - name: Copy files using SSH
+        run: |
+          scp \
+            -o StrictHostKeyChecking=no \
+            -i private-key \
+            docker-compose.yaml .env \
+            ${{ secrets.EC2_USERNAME }}@${{ vars.EC2_IP_PUBLIC_PRODUCT }}:/home/ubuntu
+      - name: Docker compose up in EC2 instance
+        run : |
+          ssh \
+            -o StrictHostKeyChecking=no \
+            -i private-key \
+            ${{ secrets.EC2_USERNAME }}@${{ vars.EC2_IP_PUBLIC_PRODUCT }} \
+            'sudo docker compose -f /home/ubuntu/docker-compose.yaml up -d --force-recreate'

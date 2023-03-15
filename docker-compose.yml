@@ -1,9 +1,6 @@
 services:
-  banking-api:
-    build:
-      context: .
-      dockerfile: Dockerfile 
-    volumes:
-      - .:/python-docker
+  api:
+    image: kevingerardo23/bank-api:$MAJOR.$MINOR-$RUN_NUMBER
+    container_name: banking-api
     ports:
       - 9000:9000
