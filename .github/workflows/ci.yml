@@ -55,7 +55,7 @@ jobs:
       - name: Checkout file docker-compose
         uses: actions/checkout@v2
         with:
-          path: docker-compose.yml
+          path: /docker-compose.yml
       - name: Create temporary key and .env
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > private-key
