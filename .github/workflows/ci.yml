@@ -3,9 +3,9 @@ on:
   push:
     branches:
       - main
-      - feature/build-image-ci-workflow
+
 jobs:
-  sonnar-scanner-analysis:
+  scanner-code-analysis:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -30,8 +30,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      #- name: "Example show SonarQube Quality Gate Status value"
-      #  run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
   build-image:
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
@@ -49,3 +47,31 @@ jobs:
           context: .
           push: true
           tags: kevingerardo23/bank-api:${{ vars.MAJOR }}.${{ vars.MINOR }}-${{ github.run_number }}
+  deploy:
+    needs: [build-image,scanner-code-analysis]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout files
+        uses: actions/checkout@v2
+      - name: Create temporary key and .env
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > private-key
+          echo "MAJOR=${{ vars.MAJOR }}" > .env
+          echo "MINOR=${{ vars.MINOR }}" >> .env
+          echo "RUN_NUMBER=${{ github.run_number }}" >> .env
+      - name: Give user permissions key file
+        run: chmod 400 private-key 
+      - name: Copy files using SSH
+        run: |
+          scp \
+            -o StrictHostKeyChecking=no \
+            -i private-key \
+            docker-compose.yml .env \
+            ${{ secrets.EC2_USERNAME }}@${{ vars.EC2_IP_PUBLIC_PRODUCT }}:/home/ubuntu
+      - name: Docker compose up in EC2 instance
+        run : |
+          ssh \
+            -o StrictHostKeyChecking=no \
+            -i private-key \
+            ${{ secrets.EC2_USERNAME }}@${{ vars.EC2_IP_PUBLIC_PRODUCT }} \
+            'sudo docker compose -f /home/ubuntu/docker-compose.yml up -d --force-recreate'
