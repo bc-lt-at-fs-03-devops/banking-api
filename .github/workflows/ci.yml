@@ -61,7 +61,7 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > private-key
           echo "MAJOR=${{ vars.MAJOR }}" > .env
           echo "MINOR=${{ vars.MINOR }}" >> .env
-          echo "RUN_NUMBER=${{ github.run_number }}" >> .env
+          echo "RUN_NUMBER=61" >> .env
       - name: Give user permissions key file
         run: chmod 400 private-key 
       - name: Copy files using SSH
