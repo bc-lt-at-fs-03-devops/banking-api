@@ -36,7 +36,7 @@ def save_transaction_to_db(transaction_dict):
     return transaction
 
 def error_amount_negative():
-    return make_response(jsonify(msg=f"The amount is negative"),404)
+    return make_response(jsonify(msg=f"The amount is negative"),400)
 
 def deposit(transaction):
     # for DEMO
@@ -80,8 +80,8 @@ def withdraw(transaction):
 
 def transaction(transaction):
     # for DEMO
-    # if transaction['amount'] < 0:
-    #     return error_amount_negative()
+    if transaction['amount'] < 0:
+        return error_amount_negative()
     cbu_destiny = transaction['final_account']
     final_account = get_account(cbu_destiny)
     destiny_balance = final_account['balance']
