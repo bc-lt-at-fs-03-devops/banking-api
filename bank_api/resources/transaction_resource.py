@@ -82,7 +82,7 @@ def transaction(transaction):
     # for DEMO
     # if transaction['amount'] < 0:
     #     return error_amount_negative()
-    # cbu_destiny = transaction['final_account']
+    cbu_destiny = transaction['final_account']
     final_account = get_account(cbu_destiny)
     destiny_balance = final_account['balance']
     cbu_origin = transaction['origin_account']
