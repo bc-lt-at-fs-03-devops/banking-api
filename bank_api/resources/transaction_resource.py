@@ -64,9 +64,9 @@ def withdraw(transaction):
     origin_account = get_account(cbu_origin)
     origin_balance = origin_account['balance']
     if origin_balance < transaction['amount']:
-        raise Exception("The amount to withdraw is bigger than current balance")
-        # for DEMO
-        # return make_response(jsonify(msg=f"The amount to withdraw is bigger than current balance"),404)
+        # raise Exception("The amount to withdraw is bigger than current balance")
+        # for PREDEMO
+        return make_response(jsonify(msg=f"The amount to withdraw is bigger than current balance"),404)
     new_balance = origin_balance - transaction['amount']
     account = update_balance(cbu_origin, new_balance)
     transaction = save_transaction_to_db(transaction)
@@ -89,9 +89,9 @@ def transaction(transaction):
     origin_account = get_account(cbu_origin)
     origin_balance = origin_account['balance']
     if origin_balance < transaction['amount']:
-        raise Exception("The amount to withdraw is bigger than current balance")
-        # for DEMO
-        # return make_response(jsonify(msg=f"The amount to withdraw is bigger than current balance"),404)
+        # raise Exception("The amount to withdraw is bigger than current balance")
+        # for PREDEMO
+        return make_response(jsonify(msg=f"The amount to withdraw is bigger than current balance"),404)
     new_origin_balance = origin_balance - transaction['amount']
     account_origin = update_balance(cbu_origin, new_origin_balance)
     new_destiny_balance = destiny_balance + transaction['amount']
