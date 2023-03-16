@@ -150,3 +150,30 @@ def test_transaction_amount_bigger_balance(client, test_user_model):
             }
         transaction_response = client.post(f"{TRANSACTION_ENDPOINT}", json=transaction_json)
         assert transaction_response.status_code == 404
+
+# for DEMO
+def test_transaction_negative_amount(client, test_user_model):
+        test_deposit(client, test_user_model)
+        login_json = {
+            "username": "calvarez",
+            "password": "123456",
+            "code": "12345678"
+        }
+        login_response = client.post(f"{LOGIN_ENDPOINT}", json=login_json)
+        account_response = client.post(f"{ACCOUNT_ENDPOINT}",
+                                       headers={'Authorization': login_response.json['access_token']})
+        assert account_response.status_code == 200
+        cbu_origin = account_response.json['cbu']
+        account_response = client.post(f"{ACCOUNT_ENDPOINT}",
+                                       headers={'Authorization': login_response.json['access_token']})
+        assert account_response.status_code == 200
+        cbu_destiny = account_response.json['cbu']
+        transaction_json = {
+                "transaction_type": "transaction",
+                "origin_account": cbu_origin,
+                "final_account": cbu_destiny,
+                "description": "test transaction",
+                "amount": -100.0
+            }
+        transaction_response = client.post(f"{TRANSACTION_ENDPOINT}", json=transaction_json)
+        assert transaction_response.status_code == 400
