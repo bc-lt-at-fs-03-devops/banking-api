@@ -31,6 +31,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
   build-image:
+    needs: [scanner-code-analysis]
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
@@ -48,7 +49,7 @@ jobs:
           push: true
           tags: kevingerardo23/bank-api:${{ vars.MAJOR }}.${{ vars.MINOR }}-${{ github.run_number }}
   deploy:
-    needs: [build-image,scanner-code-analysis]
+    needs: [build-image]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout files
