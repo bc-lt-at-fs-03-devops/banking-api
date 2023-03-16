@@ -39,8 +39,9 @@ def error_amount_negative():
     return make_response(jsonify(msg=f"The amount is negative"),404)
 
 def deposit(transaction):
-    if transaction['amount'] < 0:
-        return error_amount_negative()
+    # for DEMO
+    # if transaction['amount'] < 0:
+    #     return error_amount_negative()
     cbu_destiny = transaction['final_account']
     final_account = get_account(cbu_destiny)
     destiny_balance = final_account['balance']
@@ -56,13 +57,16 @@ def deposit(transaction):
 
 
 def withdraw(transaction):
-    if transaction['amount'] < 0:
-        return error_amount_negative()
+    # for DEMO
+    # if transaction['amount'] < 0:
+    #     return error_amount_negative()
     cbu_origin = transaction['origin_account']
     origin_account = get_account(cbu_origin)
     origin_balance = origin_account['balance']
     if origin_balance < transaction['amount']:
-        return make_response(jsonify(msg=f"The amount to withdraw is bigger than current balance"),404)
+        raise Exception("The amount to withdraw is bigger than current balance")
+        # for DEMO
+        # return make_response(jsonify(msg=f"The amount to withdraw is bigger than current balance"),404)
     new_balance = origin_balance - transaction['amount']
     account = update_balance(cbu_origin, new_balance)
     transaction = save_transaction_to_db(transaction)
@@ -75,16 +79,19 @@ def withdraw(transaction):
 
 
 def transaction(transaction):
-    if transaction['amount'] < 0:
-        return error_amount_negative()
-    cbu_destiny = transaction['final_account']
+    # for DEMO
+    # if transaction['amount'] < 0:
+    #     return error_amount_negative()
+    # cbu_destiny = transaction['final_account']
     final_account = get_account(cbu_destiny)
     destiny_balance = final_account['balance']
     cbu_origin = transaction['origin_account']
     origin_account = get_account(cbu_origin)
     origin_balance = origin_account['balance']
     if origin_balance < transaction['amount']:
-        return make_response(jsonify(msg=f"The amount to withdraw is bigger than current balance"),404)
+        raise Exception("The amount to withdraw is bigger than current balance")
+        # for DEMO
+        # return make_response(jsonify(msg=f"The amount to withdraw is bigger than current balance"),404)
     new_origin_balance = origin_balance - transaction['amount']
     account_origin = update_balance(cbu_origin, new_origin_balance)
     new_destiny_balance = destiny_balance + transaction['amount']
